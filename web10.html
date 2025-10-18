@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Generar checkbox</h1>
+    <input type="range"  id="rango" min="1" max="40" value="1">
+    <span id="valorrango"></span>
+    <h1 id="resultado" style="color:blue">0</h1>
+    <hr/>
+    <div id="contenedor"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#rango").change(function(){
+                var rango=parseInt($("#rango").val());
+                $("#valorrango").text(rango);
+
+                for(var i=0;i<=rango;i++){
+                    var numAlt=parseInt(Math.random()*100+1);
+                    var check=$("<input>");
+                        check.attr("type","checkbox");
+                        check.val(numAlt);
+
+                    var label=$("<label>")
+                        label.text(numAlt);
+
+                    $("#contenedor").append(label);
+                    $("#contenedor").append(check);
+
+                    check.change(function(){
+                        // var resultado=parseInt($("#resultado").text());
+                        // var numero=parseInt($(this).val());
+
+                        // if($(this).is(":checked")==true){
+                        //     resultado+=numero;
+                        // }else{
+                        //     resultado-=numero;
+                        // }
+
+                        // $("#resultado").text(resultado);
+                        var resultado=0;
+                        $("input[type=checkbox]:checked").each(function(){
+                            var numero=parseInt($(this).val());
+                            resultado+=numero;
+                            
+                        })
+                        $("#resultado").text(resultado);
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>

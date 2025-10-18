@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Botones</h1>
+    <label for="">Cuantos botones?</label>
+    <input type="range" id="rango" min="1" max="50" value="1">
+    <span id="valorrango"></span>
+    <div id="contenedor"></div>
+    <h1 id="resultado">0</h1>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#rango").change(function(){
+                var rango=parseInt($("#rango").val());
+                $("#valorrango").text(rango);
+
+                for(var i=1;i<=rango;i++){
+                    var numAle=parseInt(Math.floor(Math.random()*100+1));
+                    var chck=$("<input>",{
+                        "type":"checkbox",
+                        "value": numAle
+
+                    });
+                    var label=$("<label>");
+                        label.text(numAle);
+
+                    $("#contenedor").append(chck);
+                    $("#contenedor").append(label);
+
+                    // chck.change(function(){
+                    //     var resultado=parseInt($("#resultado").text());
+                    //     var numero= parseInt($(this).val());
+                    //     if($(this).is(":checked")==true){
+                    //         resultado+=numero;
+                    //     }else{
+                    //         resultado-=numero;
+                    //     }
+                    //     $("#resultado").text(resultado);
+                    // })
+                        
+                    chck.change(function(){
+                        var resultado=0;
+                        $("input[type=checkbox]:checked").each(function(){
+                            var numero=parseInt($(this).val());
+                            resultado+=numero;
+                        })
+                        $("#resultado").text(resultado);
+                        
+                    })
+
+                }
+            })
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Practica final JQUERY</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+    <meta name="theme-color" content="#7952b3">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        #tabladoctores{
+            margin: auto;
+            margin-top: 50px;
+        }
+        #tabladoctores th,td{
+            text-align: center; 
+            margin: auto; 
+            border: solid 2px;
+            padding: 10px;
+        }
+        #tabladoctores thead{
+            background-color: green;
+        }
+        #tabladoctores tbody{
+            background-color: purple;
+            color:aquamarine;
+        }
+        a{
+            color:coral;
+        }
+        
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+</head>
+
+<body class="d-flex h-100 text-center text-white bg-dark">
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div>
+                <h3 class="float-md-start mb-0">DPG</h3>
+                <nav class="nav nav-masthead justify-content-center float-md-end">
+                    <a class="nav-link active" aria-current="page" href="web20home.html">Home</a>
+                    <a class="nav-link" href="web20creardoctor.html">Crear Doctor</a>
+                    <a class="nav-link" href="web20modificardoctor.html">Cambiar Doctor</a>
+                    
+                </nav>
+            </div>
+        </header>
+
+        <main class="px-3">
+            <h1>DOCTORES</h1>
+           <table id="tabladoctores">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Hospital</th>
+                        <th>Apellido</th>
+                        <th>Especialidad</th>
+                        <th>Salario</th>
+                        <th>Detalles</th>
+                        <th>Modificar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+           </table>
+            
+        </main>
+        <script src="js/jquery-3.7.1.js"></script>
+        <script>
+            var url="https://apicruddoctores.azurewebsites.net/"
+            let params=new window.URLSearchParams(window.location.search);
+            var idDelete=params.get("iddoctor");
+            console.log("Mi id es "+idDelete);
+
+            if(idDelete!=null){
+                var request="api/Doctores/"+idDelete;
+
+                $.ajax({
+                    url:url+request,
+                    type:"DELETE",
+                    success:function(){
+                        console.log("Eliminado");
+                        loadDoctores();
+                    }
+                })
+            }
+
+            $(document).ready(function(){
+                loadDoctores();
+            })
+
+            function loadDoctores(){
+                var request="/api/Doctores";
+
+                $.ajax({
+                    url:url+request,
+                    type:"GET",
+                    dataType:"json",
+                    success:function(data){
+                        console.log("Entrando en doctores...");
+                        console.log(data);
+                        var tabla="";
+                        $.each(data,function(index,doctor){
+                            tabla+="<tr>";
+                            tabla+="<td>"+doctor.idDoctor+"</td>";
+                            tabla+="<td>"+doctor.idHospital+"</td>";
+                            tabla+="<td>"+doctor.apellido+"</td>";
+                            tabla+="<td>"+doctor.especialidad+"</td>";
+                            tabla+="<td>"+doctor.salario+" €"+"</td>";
+                            tabla+="<td>";
+                            tabla+="<a href='web20detallesdoctor.html?iddoctor="+doctor.idDoctor+"'>Detalles"+"</a>";
+                            tabla+="</td>";
+                            tabla+="<td>";
+                            tabla+="<a href='web20modificardoctor.html?iddoctor="+doctor.idDoctor+"'>Modificar"+"</a>";
+                            tabla+="</td>";
+                            tabla+="<td>";
+                            tabla+="<a href='web20home.html?iddoctor="+doctor.idDoctor+"'>Eliminar"+"</a>";
+                            tabla+="</td>";
+                            tabla+="</tr>";
+                        })
+                        $("#tabladoctores tbody").html(tabla);
+                    }
+                })
+            }
+        </script>
+    </div>
+
+
+
+</body>
+
+</html>

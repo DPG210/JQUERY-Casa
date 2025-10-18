@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Crud xml</h1>
+    <label for="">Id</label>
+    <input type="text" id="cajaid"><br>
+    <label for="">Nombre</label>
+    <input type="text" id="cajanombre"><br>
+    <label for="">Localidad</label>
+    <input type="text" name="" id="cajalocalidad"><br>
+    <table id="tabladepartamentos">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Localidad</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button id="botoncrear">Crear</button>
+    <button id="botonmodificar">Modificar</button>
+    <button id="botondelete">Borrar</button>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        let url="https://apicruddepartamentosxml.azurewebsites.net/";
+        $(document).ready(function(){
+            loadDepartamentos();
+            $("#botoncrear").click(function(){
+                console.log("Dentro de crear");
+                var request="api/departamentos";
+
+                var id=$("#cajaid").val();
+                var nombre=$("#cajanombre").val();
+                var localidad=$("#cajalocalidad").val();
+
+                let departamento="<Departamento>";
+                    departamento+="<IdDepartamento>"+id+"</IdDepartamento>";
+                    departamento+="<Nombre>"+nombre+"</Nombre>";
+                    departamento+="<Localidad>"+localidad+"</Localidad>";
+                    departamento+="</Departamento>";
+
+
+                    $.ajax({
+                        url:url+request,
+                        type:"POST",
+                        contentType:"text/xml",
+                        data:departamento,
+                        success:function(){
+                            console.log("Creando");
+                            loadDepartamentos();
+                        }
+                    })
+            })
+            $("#botonmodificar").click(function(){
+                var request="api/departamentos";
+
+                var id=$("#cajaid").val();
+                var nombre=$("#cajanombre").val();
+                var localidad=$("#cajalocalidad").val();
+
+                var departamento=crearDepartamento(id,nombre,localidad);
+
+                $.ajax({
+                    url:url+request,
+                    type:"PUT",
+                    contentType:"text/xml",
+                    data:departamento,
+                    success:function(){
+                        console.log("Actualizando");
+                        loadDepartamentos();
+                    }
+                })
+
+            })
+            $("#botondelete").click(function(){
+                
+
+                var id=$("#cajaid").val();
+                var request="api/Departamentos/"+id;
+
+                $.ajax({
+                    url:url+request,
+                    type:"DELETE",
+                    success:function(){
+                        console.log("Eliminando");
+                        loadDepartamentos();
+                    }
+                })
+            })
+        })
+
+        function crearDepartamento(id,nombre,localidad){
+            let departamento="<Departamento>";
+                    departamento+="<IdDepartamento>"+id+"</IdDepartamento>";
+                    departamento+="<Nombre>"+nombre+"</Nombre>";
+                    departamento+="<Localidad>"+localidad+"</Localidad>";
+                    departamento+="</Departamento>";
+
+                    return(departamento);
+        }
+
+        function loadDepartamentos(){
+            var request="api/Departamentos";
+
+            $.get(url+request,function(data){
+                console.log("dentro del get");
+               
+                var html="";
+
+                $(data).find("Departamento").each(function(){
+                    var id=$(this).find("IdDepartamento").text();
+                    var nombre=$(this).find("Nombre").text();
+                    var localidad=$(this).find("Localidad").text();
+                    html+="<tr>"
+                    html+= "<td>"+id+"</td>"
+                    html+= "<td>"+nombre+"</td>"
+                    html+= "<td>"+localidad+"</td>"
+                    html+="</tr>"
+
+                    $("#tabladepartamentos tbody").html(html)
+
+                })
+                
+            })
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Doctores</h1>
+    <select name="" id="selectespecialidad"></select>
+    <div id="cajadetalles"></div>
+    <ul id="listadoctores"></ul>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        let url="https://apicruddoctores.azurewebsites.net/"
+        $(document).ready(function(){
+            loadEspecialidades();
+
+            $("#selectespecialidad").change(function(){
+                var especialidad=$(this).val();
+
+                loadDoctores(especialidad);
+            })
+        })
+
+        function loadEspecialidades(){
+            let request="api/doctores";
+
+            $.ajax({
+                url:url+request,
+                type:"GET",
+                dataType:"json",
+                success:function(data){
+                    console.log("Dentro del get");
+                    console.log(data);
+                    var especialidadunicas=[];
+                    $(data).each(function(index,doctor){
+
+                        var especialidad=doctor.especialidad;
+                        
+                        if(especialidadunicas.indexOf(especialidad)===-1){
+                            especialidadunicas.push(especialidad);
+                        }
+                        
+
+                        console.log("Mi array de especialidades unicas "+especialidadunicas);
+
+                    })
+
+                    $.each(especialidadunicas,function(index,especialidad){
+                        var option=$("<option>");
+                            option.text(especialidad);
+                            option.val(especialidad);
+
+                        $("#selectespecialidad").append(option);
+                    })
+
+                }
+            })
+        }
+
+        function loadDoctores(especialidad){
+            $("#listadoctores").empty();
+            $("#cajadetalles").empty();
+            let requestdoc="api/Doctores/DoctoresEspecialidad/"+especialidad;
+
+            $.ajax({
+                url:url+requestdoc,
+                type:"GET",
+                dataType:"json",
+                success:function(data){
+                    console.log("Segundo get");
+                    console.log(data);
+
+                    $(data).each(function(index,doc){
+                        var lista=$("<li>");
+                            lista.text(doc.apellido);
+                            lista.val(doc.idDoctor);
+                        
+                        var boton=$("<button>");
+                            boton.text("Detalles");
+                            boton.val(doc.idDoctor);
+
+                        lista.append(boton);
+                       $ ("#listadoctores").append(lista);
+
+                       boton.click(function(){
+                            var idd=$(this).val();
+                            var resquestdc="api/Doctores/"+idd;
+
+                            $.ajax({
+                                url:url+resquestdc,
+                                type:"GET",
+                                dataType:"json",
+                                success:function(data){
+                                    var html="";
+                                        html+="Nombre "+data.apellido;
+                                        html+=" Id "+data.idDoctor;
+                                    $("#cajadetalles").html(html);
+                                }
+                            })
+
+                       })
+                    })
+                }
+
+            })
+
+        }
+    </script>
+</body>
+</html>

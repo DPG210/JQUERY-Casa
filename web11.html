@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Buscar por id</h1>
+    <label for="">Introduzca el ID</label>
+    <input type="text" id="cajaid">
+    <button id="botonid">Buscar</button>
+    <h1 id="mensaje"></h1>
+    <hr/>
+    <h1>Buscar por localidad</h1>
+    <label for="">Introduzca la localidad</label>
+    <input type="text" id="cajalocalidad">
+    <button id="botonlocalidad">Buscar</button>
+    <hr/>
+    <div id="contenedor1"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#botonid").click(function(){
+                
+                $.get("documents/departamentos.xml",function(data){
+                var id=$("#cajaid").val();
+                var filtro= "DEPT[DEPT_NO="+id+"]";
+
+                var numdept= $(data).find(filtro).first();
+                var nombre= $(numdept).find("DNOMBRE").text();
+                var localidad=$(numdept).find("LOC").text();
+
+                $("#mensaje").text("Departamento: "+id+" , nombre: "+nombre+", localidad: "+localidad);
+
+                
+            })
+
+            })
+            
+            $("#botonlocalidad").click(function(){
+                $.get("documents/departamentos.xml",function(data){
+                    var localidad=$("#cajalocalidad").val();
+                    var filtro="LOC:contains("+localidad+")";
+
+                    var elementos=$(data).find(filtro);
+
+                    var html="";
+
+                    if(elementos.length<=0){
+                        html="No hay coincidencias";
+                    }else{
+
+                        $(data).find(filtro).each(function(){
+
+                        var numdept=$(this).parent().attr("DEPT_NO");
+                        var nombre=$(this).parent().find("DNOMBRE").text();
+
+                        html+="<li>" +"El numero de departamento es "+numdept;
+                        html+=" El nombre es "+nombre;
+                        html+=" La localidad es "+localidad+"</li>";
+                        });
+
+                    }
+
+                    $("#contenedor1").html(html);
+                })
+            })
+        })
+    </script>
+</body>
+</html>

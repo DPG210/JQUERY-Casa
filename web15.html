@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>DEPARTAMENTOS</h1>
+    <label for="">Numero</label>
+    <input type="text" id="cajanumero"><br>
+    <label for="">Nombre</label>
+    <input type="text" name="" id="cajanombre"><br>
+    <label for="">Localidad</label>
+    <input type="text" id="cajalocalidad"><br>
+    <button id="botoncrear">Crear</button>
+    <button id="botonmodificar">Modificar</button>
+    </hr>
+    <div id="contenedordatos"></div>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        let url="https://apicruddepartamentospgs.azurewebsites.net/"
+        
+        $(document).ready(function(){
+            loadDepartamentos();
+            $("#botoncrear").click(function(){
+                $("#contenedordatos").empty();
+                var numero=parseInt($("#cajanumero").val());
+                var nombre=$("#cajanombre").val();
+                var localidad=$("#cajalocalidad").val();
+
+                var departamento=new Object();
+                    departamento.numero=numero;
+                    departamento.nombre=nombre;
+                    departamento.localidad=localidad;
+
+                var datajson=JSON.stringify(departamento);
+
+                let request="webresources/departamentos/post"
+
+                $.ajax({
+                    url:url+request,
+                    type:"POST",
+                    contentType:"application/json",
+                    data:datajson,
+                    success:function(){
+                        console.log("Creando");
+                        loadDepartamentos();
+                        $("contenedordatos").empty();
+                    }
+                })
+            })
+            $("#botonmodificar").click(function(){
+                $("#contenedordatos").empty();
+                var numero=parseInt($("#cajanumero").val());
+                var nombre=$("#cajanombre").val();
+                var localidad=$("#cajalocalidad").val();
+
+                var departamento=new Object();
+                    departamento.numero=numero;
+                    departamento.nombre=nombre;
+                    departamento.localidad=localidad;
+
+                var datajson=JSON.stringify(departamento);
+
+                let request="webresources/departamentos/put"
+
+                $.ajax({
+                    url:url+request,
+                    type:"PUT",
+                    contentType:"application/json",
+                    data: datajson,
+                    success: function(){
+                        console.log("Modificando");
+                        loadDepartamentos();
+                        $("#contenedordatos").empty();
+                    }
+                })
+            })
+        })
+        function loadDepartamentos(){
+            let request="webresources/departamentos";
+            $.ajax({
+                url:url+request,
+                type:"GET",
+                dataType: "json",
+                success:function(data){
+                    console.log("Cargando");
+                    
+                    $.each(data,function(index,departamento){
+                        var html=$("<li>");
+                        html.text("Numero: "+ departamento.numero+
+                        " Nombre: "+ departamento.nombre+
+                        " Localidad: "+ departamento.localidad)
+                       
+
+                        var boton=$("<button>");
+                            boton.text("Borrar "+ departamento.nombre);
+                            boton.val(departamento.numero);
+                            boton.css("margin","5px");
+
+                            html.append(boton);
+                            $("#contenedordatos").append(html);
+
+                        boton.click(function(){
+                            var id=$(this).val();
+
+                            let request="webresources/departamentos/delete/"+id;
+
+                            $.ajax({
+                                url:url+request,
+                                type:"DELETE",
+                                success:function(){
+                                    console.log("Borrando");
+                                    $("#contenedordatos").empty();
+                                    loadDepartamentos();
+                                    
+                                }
+                            })
+                            
+                        })
+                        
+                    })
+                }
+
+            })
+        }
+    </script>
+</body>
+</html>

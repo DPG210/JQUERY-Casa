@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Control dinamico</h1>
+    <label for="">Introduzca texto</label>
+    <input type="text" id="cajatexto">
+    <button id="botongenerar">Generar</button>
+    <div id="contenedor"></div>
+    <div id="contenerdor2"></div>
+   
+    <script src="js/jquery-3.7.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#botongenerar").click(function(){
+                var texto= $("#cajatexto").val();
+                var parrafo= $("<p>");
+                    parrafo.text(texto);
+                    parrafo.css("color","fuchsia");
+                    parrafo.css("font-family","arial");
+
+                 var espacio=$("<span>")
+                     espacio.text("");
+                     espacio.css("font-size","20px")
+                     espacio.css("color","orange")
+
+                var dobleclick= false;
+                    
+
+                $("#contenedor").append(parrafo);
+                $("#contenedor").append(espacio);
+
+                parrafo.click(function(){
+                    $(this).css("color","green");
+                    $(this).text("Has hecho un click");
+                    
+                })
+                parrafo.dblclick(function(){
+                    $(this).css("color","blue");
+                    $(this).text("Dejalo ya (¬_¬)");
+                    espacio.text("");
+                    dobleclick=true;
+                })
+                parrafo.mouseover(function(){
+
+                    if(dobleclick==true){
+                        espacio.text("");
+                    }else{
+                    espacio.text("Pulsa");
+                    }
+                   
+                    
+                })
+                parrafo.mouseout(function(){
+                    espacio.text("");
+                })
+            
+            })
+            
+        })
+    </script>
+</body>
+</html>
